@@ -1,0 +1,55 @@
+#wheel {
+    width: 400px;
+    height: 400px;
+    left: 20%;
+    right: 50%;
+    border-radius: 50%;
+    position: relative;
+    /*    background: conic-gradient(#3498db 0% 25%,
+            #e74c3c 25% 50%,
+            #2ecc71 50% 75%,
+            #f39c12 75% 100%);*/
+    transition: transform 3s ease-out;
+    overflow: hidden;
+    border-color: black;
+}
+
+#historyListContainer {
+    position: absolute;
+    top: 5%;
+    right: 20%;
+    height: 400px;
+    width: 200px;
+    /* 设置列表容器的宽度，可以根据实际需求调整 */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+}
+
+#historyList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#historyList li {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+/*
+.sector div {
+    transform: rotate(0deg);
+    text-align: center;
+    margin-top: 40%;
+}*/
+
+.text {
+    writing-mode: vertical-rl;
+    /* vertical right-to-left */
+    text-orientation: mixed;
+    /* 保持文字正常方向 */
+}
+
+#startBtn {
+    margin-top: 20px;
+}
