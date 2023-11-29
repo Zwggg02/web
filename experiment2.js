@@ -4,7 +4,19 @@ const speedBtn = document.getElementById("speedBtn");
 const rollbackBtn = document.getElementById("counterclockwise");
 const stopBtn = document.getElementById("stopBtn");
 const updateBtn = document.getElementById("updateBtn");
+const historyListContainer = document.getElementById('historyListContainer');
+const wheelItemsContainer = document.getElementById('wheelItemsContainer');
 const historyListElement = document.getElementById('historyList');
+const wheelItems = document.getElementById("wheelItems");
+// 获取相关元素
+const saveBtn = document.getElementById('saveBtn');
+const addBtn = document.getElementById('addBtn');
+const cancelBtn = document.getElementById("cancelBtn");
+const clearBtn = document.getElementById('clearBtn');
+
+// 当前编辑的奖项索引，-1 表示没有正在编辑的项
+let editingIndex = -1;
+
 const history = []; // 用于保存抽奖记录的数组
 
 
@@ -19,19 +31,20 @@ const awards = [
     '戴尔电脑',
     '10元',
     '100元',
-    '待定一',
-    '待定二',
+    '1元',
+    '五元',
+    '平板电脑'
 ]
 //存储所有的color
 const colors = [
-    'orange',
-    'white',
-    'yellow',
-    'blue',
-    'gray',
     '#be2c71',
     '#de2c71',
     '#ae2c71',
+    '#2684df',
+    '#ed4935',
+    '#fe045a',
+    '#ad3425',
+    '#ce3424'
 ]
 let options = [
     /* { color: 'orange', text: '奖品华为手机' },
@@ -117,8 +130,92 @@ function updateWheel() {
 
     wheel.style.background = generateConicGradient(options);
     createDynamicWheel(options);
+    showWheel();
+}
+//展示转盘中的元素
+function showWheel() {
+    wheelItems.innerHTML = '';
+
+    for (let i = 0; i < options.length; i++) {
+        const items = document.createElement('li');
+        const itemsName = document.createElement('span');
+        const itemsColor = document.createElement('input');
+        const deleteButton = createDeleteButton(); // 创建删除按钮
+
+        //itemsColor.classList.add('color-show');
+
+        items.appendChild(itemsName);
+        items.appendChild(itemsColor);
+        items.appendChild(deleteButton); // 添加删除按钮到行中
+        itemsName.innerText = options[i].text;
+        itemsColor.type = 'color';
+        itemsColor.value = options[i].color;
+        // 设置可编辑性
+        itemsName.setAttribute('contenteditable', 'true');
+
+        // 添加文本变化监听器
+        itemsName.addEventListener('input', createTextChangeListener(i));
+
+        console.log(itemsColor)
+        // 添加颜色变化监听器
+        itemsColor.addEventListener('input', handleColorChange);
+
+
+        wheelItems.appendChild(items);
+    }
 
 }
+function createDeleteButton() {
+    const deleteButton = document.createElement('button');
+    deleteButton.innerText = '删除';
+    deleteButton.addEventListener('click', handleDeleteRow);
+    return deleteButton;
+}
+
+function handleDeleteRow(event) {
+    const row = event.target.closest('li'); // 获取按钮所在的行
+    if (row) {
+        row.remove(); // 删除行
+        const rowsArray = Array.from(wheelItems.children);
+        const tmp_options = [];
+        for (let i = 0; i < rowsArray.length; i++) {
+            const text = rowsArray[i].querySelector('span').innerText;
+            const color = rowsArray[i].querySelector('input').value;
+            tmp_options.push({
+                text: text,
+                color: color,
+            });
+            options = tmp_options;
+            createDynamicWheel(options);
+            wheel.style.background = generateConicGradient(options);
+
+        }
+    }
+
+
+}
+function createTextChangeListener(index) {
+    return function (event) {
+        options[index].text = event.target.innerText;
+        // 在这里你可以执行更新转盘等操作
+        createDynamicWheel(options);
+    };
+}
+
+// 颜色输入框变化时的处理函数
+function handleColorChange(event) {
+    const colorInput = event.target;
+    console.log(event)
+    const listItem = colorInput.closest('li');
+    const index = Array.from(wheelItems.children).indexOf(listItem);
+    // 更新 options 数组中对应项的颜色
+    options[index].color = colorInput.value;
+    console.log(options[index].color);
+    // 更新转盘显示
+    wheel.style.background = generateConicGradient(options);
+
+}
+
 // 辅助函数，从数组中随机选择指定数量的项
 function getRandomItems(array, numItems) {
     const shuffled = array.sort(() => 0.5 - Math.random());//将数组顺序打乱
@@ -126,6 +223,9 @@ function getRandomItems(array, numItems) {
 }
 //让转盘停止转动
 function stopWheel() {
+    if (isSpinning == false) {
+        return;
+    }
     isSpinning = false;
     // 获取当前旋转角度
     const computedStyle = window.getComputedStyle(wheel);
@@ -169,9 +269,14 @@ function spinWheel() {
 }
 function handleTransitionEnd() {
     isSpinning = false;
+
+
     wheel.removeEventListener('transitionend', handleTransitionEnd);
 
     const selectedOption = getSelectedOption(currentRotation);
+
+    // 显示弹窗
+    showPopup(`恭喜您抽到了 ${selectedOption.text}!`, selectedOption.color);
 
     const endTime = new Date(); // 记录抽奖结束时间
 
@@ -179,6 +284,7 @@ function handleTransitionEnd() {
     const historyItem = {
         text: selectedOption.text,
         time: formatLocalTime(endTime), // 获取本地时间并格式化
+        color: selectedOption.color,
     };
     history.push(historyItem);
 
@@ -186,6 +292,26 @@ function handleTransitionEnd() {
     updateHistoryList();
 
     console.log('Selected Option:', selectedOption);
+}
+//显示弹窗
+function showPopup(message, color) {
+    const popup = document.getElementById('popup');
+    const overlay = document.getElementById('overlay');
+    const popupText = document.getElementById('popupText');
+
+    // 设置弹窗文本
+    popupText.textContent = message;
+    popupText.style.color = color;
+
+    // 显示弹窗和遮罩层
+    popup.style.display = 'block';
+    overlay.style.display = 'block';
+
+    // 点击关闭按钮时隐藏弹窗和遮罩层
+    document.getElementById('closeBtn').addEventListener('click', function () {
+        popup.style.display = 'none';
+        overlay.style.display = 'none';
+    });
 }
 
 function getSelectedOption(rotation) {
@@ -197,6 +323,9 @@ function getSelectedOption(rotation) {
     return options[total - 1 - sectorIndex];
 }
 function speedUp() {
+    if (isSpinning == false) {
+        return;
+    }
     if (state == 1) {
         currentRotation += 720;
     }
@@ -207,33 +336,91 @@ function speedUp() {
     wheel.style.transform = `rotate(${currentRotation}deg)`; // 调整旋转方向
 }
 function formatLocalTime(date) {
-    const options = {
+    const optionsTime = {
         hour: 'numeric',
         minute: 'numeric',
         second: 'numeric',
         year: 'numeric',
         month: 'numeric',
         day: 'numeric',
-        timeZoneName: 'short',
     };
-    return new Intl.DateTimeFormat('default', options).format(date);
+    return new Intl.DateTimeFormat('default', optionsTime).format(date);
 }
-
+//展示中奖列表
 function updateHistoryList() {
     // 清空抽奖记录列表
     historyListElement.innerHTML = '';
 
+
     // 遍历抽奖记录数组，添加到列表中
     history.forEach((item) => {
         const listItem = document.createElement('li');
-        listItem.innerText = `${item.text}        （抽奖时间：${item.time}）`;
+        const listAward = document.createElement('span');
+        const listTime = document.createElement('span');
+        listAward.classList.add('PrizeName');
+        listTime.classList.add("getTime");
+        listItem.appendChild(listAward);
+        listItem.appendChild(listTime);
+        //listItem.innerText = `${item.text}        （抽奖时间：${item.time}）`;
+        listAward.innerText = item.text;
+        listTime.innerText = item.time;
+        listAward.style.color = item.color;
         historyListElement.appendChild(listItem);
     });
+    setTimeout(() => {
+        historyListContainer.scrollTop = historyListContainer.scrollHeight;
+    }, 0);
+
+    console.log(historyListElement.scrollHeight);
 }
 
+//添加奖项
+function addItemsToWheel() {
+    addPopup.style.display = 'block';
+    const addText = document.getElementById('newPrize');
+    const addColor = document.getElementById('newColor');
+    addColor.value = '#3498db';
+    addText.value = "";
+}
+function cancelAddItemsToWheel() {
+    //清空文本，恢复颜色
+
+
+    console.log("关闭");
+    addPopup.style.display = 'none';
+}
+//保存添加奖项操作
+function saveAddToWheel() {
+    const newPrize = document.getElementById('newPrize').value;
+    const newColor = document.getElementById('newColor').value;
+
+    // 在这里处理添加新奖品和颜色的逻辑，例如更新 options 数组
+    const add = {
+        text: newPrize,
+        color: newColor,
+    };
+    options.push(add);
+    createDynamicWheel(options);
+    wheel.style.background = generateConicGradient(options);
+    showWheel();
+    // 添加完毕后关闭对话框
+    addPopup.style.display = 'none';
+    wheelItemsContainer.scrollTop = wheelItemsContainer.scrollHeight;
+}
+function clearHistoryList() {
+    historyListElement.innerHTML = '';
+    history.length = 0;
+    while (historyListElement.firstChild) {
+        historyListElement.removeChild(historyListElement.firstChild);
+    }
+}
 
 startBtn.addEventListener('click', spinWheel);
 speedBtn.addEventListener('click', speedUp);
 rollbackBtn.addEventListener("click", rollback);
 stopBtn.addEventListener("click", stopWheel);
 updateBtn.addEventListener("click", updateWheel);
+addBtn.addEventListener("click", addItemsToWheel);
+cancelBtn.addEventListener("click", cancelAddItemsToWheel);
+saveBtn.addEventListener("click", saveAddToWheel);
+clearBtn.addEventListener("click", clearHistoryList);

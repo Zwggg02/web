@@ -10,14 +10,49 @@
 </head>
 
 <body>
+
     <div id="wheel"></div>
     <button id="startBtn">开始</button>
     <button id="stopBtn">暂停</button>
     <button id="speedBtn">加速</button>
     <button id="counterclockwise">逆时针转</button>
     <button id="updateBtn">刷新转盘</button>
+    <button id="addBtn">添加奖项</button>
+
+    <button id="clearBtn">清空列表</button>
+    <span id="wheelMessage">转盘信息</span>
+    <span id="awardsList">获奖名单</span>
     <div id="historyListContainer">
-        <ul id="historyList"></ul>
+        <ul id="historyList">
+
+        </ul>
+    </div>
+    <div id="wheelItemsContainer">
+        <ul id="wheelItems">
+
+        </ul>
+    </div>
+
+    <!-- 弹窗内容 -->
+    <div id="popup">
+        <p id="popupText"></p>
+        <button id="closeBtn">关闭</button>
+    </div>
+
+    <!-- 遮罩层 -->
+    <div id="overlay"></div>
+
+    <div id="addPopup">
+        <label for="newPrize">奖品名称:</label>
+        <input type="text" id="newPrize" required>
+
+        <br>
+        <label for="newColor">奖品颜色:</label>
+        <input type="color" id="newColor" value="#3498db" required>
+        <br>
+
+        <button id="saveBtn">保存</button>
+        <button id="cancelBtn">取消</button>
     </div>
 </body>
 

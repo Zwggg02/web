@@ -1,10 +1,34 @@
+.backgroundImg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#wheelMessage {
+    position: absolute;
+    right: 43%;
+    top: 2%;
+    letter-spacing: 20px;
+    /* 调整间隔大小 */
+}
+
+#awardsList {
+    position: absolute;
+    right: 12%;
+    top: 2%;
+    letter-spacing: 20px;
+}
+
 #wheel {
     width: 400px;
     height: 400px;
-    left: 20%;
+    left: 5%;
     right: 50%;
     border-radius: 50%;
     position: relative;
+    top: 30px;
     /*    background: conic-gradient(#3498db 0% 25%,
             #e74c3c 25% 50%,
             #2ecc71 50% 75%,
@@ -17,9 +41,9 @@
 #historyListContainer {
     position: absolute;
     top: 5%;
-    right: 20%;
+    right: 5%;
     height: 400px;
-    width: 200px;
+    width: 400px;
     /* 设置列表容器的宽度，可以根据实际需求调整 */
     overflow-y: auto;
     border: 1px solid #ccc;
@@ -32,18 +56,64 @@
 }
 
 #historyList li {
+    display: flex;
     padding: 8px;
     border-bottom: 1px solid #eee;
+    justify-content: space-between;
 }
 
-/*
-.sector div {
-    transform: rotate(0deg);
+#historyList .prizeName {
+    flex: 1;
     text-align: center;
-    margin-top: 40%;
-}*/
+    /* 第一个列占据剩余空间 */
+}
 
-.text {
+#historyList .winningTime {
+    flex-basis: 250px;
+    /* 第二个列固定宽度，根据实际需求调整 */
+    text-align: center;
+    /* 可选：右对齐时间 */
+}
+
+#wheelItemsContainer {
+    position: absolute;
+    top: 5%;
+    right: 35%;
+    height: 400px;
+    width: 400px;
+    /* 设置列表容器的宽度，可以根据实际需求调整 */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+}
+
+#wheelItems {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#wheelItems li span {
+    flex: 1;
+    /* 使 span 充满剩余空间 */
+    margin-right: 10px;
+    /* 右边距根据需要调整 */
+}
+
+#wheelItems li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding: 8px;
+}
+
+#wheelItems li input {
+    margin-right: 20px;
+    /* 将 input 推到右侧 */
+}
+
+
+#wheel .text {
     writing-mode: vertical-rl;
     /* vertical right-to-left */
     text-orientation: mixed;
@@ -51,5 +121,151 @@
 }
 
 #startBtn {
+    position: absolute;
+    top: 68%;
+    left: 1%;
     margin-top: 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+#stopBtn {
+    position: absolute;
+    top: 68%;
+    left: 8%;
+    margin-top: 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+#speedBtn {
+    position: absolute;
+    top: 68%;
+    left: 15%;
+    margin-top: 100px;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+#counterclockwise {
+    position: absolute;
+    top: 68%;
+    left: 22%;
+    margin-top: 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+#updateBtn {
+    position: absolute;
+    top: 68%;
+    left: 29%;
+    margin-top: 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+
+}
+
+#popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    text-align: center;
+    /* 居中文本 */
+}
+
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9998;
+}
+
+#closeBtn {
+    margin-top: 20px;
+}
+
+#addBtn {
+    position: absolute;
+    margin-top: 20px;
+    top: 68%;
+    left: 47%;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+#clearBtn {
+    position: absolute;
+    top: 68%;
+    right: 15%;
+    margin-top: 20px;
+    width: 100px;
+    height: 50px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+}
+
+#addPopup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
+    text-align: center;
 }
