@@ -185,11 +185,12 @@ function handleDeleteRow(event) {
                 text: text,
                 color: color,
             });
-            options = tmp_options;
-            createDynamicWheel(options);
-            wheel.style.background = generateConicGradient(options);
-
         }
+        options = tmp_options;
+        console.log(options)
+        createDynamicWheel(options);
+        wheel.style.background = generateConicGradient(options);
+        showWheel();
     }
 
 
@@ -199,6 +200,7 @@ function createTextChangeListener(index) {
         options[index].text = event.target.innerText;
         // 在这里你可以执行更新转盘等操作
         createDynamicWheel(options);
+
     };
 }
 
